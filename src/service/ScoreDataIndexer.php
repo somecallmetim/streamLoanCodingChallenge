@@ -11,8 +11,14 @@ class ScoreDataIndexer implements ScoreDataIndexerInterface
     private $csvReader;
 
     // makes sure there's data to read when the service is instantiated
-    public function __construct(){
-        $this->csvReader = Reader::createFromPath('%kernel.root.dir%/data/data.csv');
+        // $dataFilePath is setup in services.yaml & gives path to "medium sized" csv file
+    public function __construct(string $dataFilePath){
+        $this->csvReader = Reader::createFromPath($dataFilePath);
+        $this->csvReader->setHeaderOffset(0);
+    }
+
+    public function setDataSource(string $path){
+        $this->csvReader = Reader::createFromPath($path);
         $this->csvReader->setHeaderOffset(0);
     }
 
@@ -31,6 +37,7 @@ class ScoreDataIndexer implements ScoreDataIndexerInterface
             // set this manually because a type conversion will have to happen regardless
                 // this way it's explicit and easier to read
             $score = intval($row['score']);
+            // checks if score is between the two values given
             if($score >= $rangeStart && $score <= $rangeEnd){
                 $count++;
             }
@@ -56,9 +63,14 @@ class ScoreDataIndexer implements ScoreDataIndexerInterface
                 // this way it's explicit and easier to read
             $score = intval($row['score']);
             $age = intval($row['age']);
+            // checks if the legal age requirement that's been requested matches the age for the current row
             if(($hasLegalAge && $age >= 18) or (!$hasLegalAge && $age < 18)){
-                if($region == $row['region'] && $gender == $row['gender'] && $score > 0){
-                    $count++;
+                // checks if the score is positive or negative and whether that matches search condition
+                if(($hasPositiveScore && $score > 0) or (!$hasPositiveScore && $score <= 0)){
+                    // check if region & gender match the search term that's been requested
+                    if($region == $row['region'] && $gender == $row['gender']){
+                        $count++;
+                    }
                 }
             }
         }

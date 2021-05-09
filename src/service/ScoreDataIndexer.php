@@ -9,12 +9,18 @@ use League\Csv\Reader;
 class ScoreDataIndexer implements ScoreDataIndexerInterface
 {
     private $csvReader;
+    private $dataFilePath;
 
     // makes sure there's data to read when the service is instantiated
         // $dataFilePath is setup in services.yaml & gives path to "medium sized" csv file
     public function __construct(string $dataFilePath){
+        $this->dataFilePath = $dataFilePath;
         $this->csvReader = Reader::createFromPath($dataFilePath);
         $this->csvReader->setHeaderOffset(0);
+    }
+
+    public function getDataSource(){
+        return $this->dataFilePath;
     }
 
     public function setDataSource(string $path){

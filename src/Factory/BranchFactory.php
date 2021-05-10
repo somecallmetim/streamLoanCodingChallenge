@@ -37,7 +37,7 @@ final class BranchFactory extends ModelFactory
     {
         return [
             // TODO add your default values here (https://github.com/zenstruck/foundry#model-factories)
-            'country' => self::faker()->countryCode(),
+            'country' => self::faker()->randomElement(['US', 'FR', 'JP', 'CA', 'CN', 'DE']),
             'state' => self::faker()->randomElement(['CA', 'IA', 'SC', 'CT', 'VA', 'IL', 'NV', 'HI', 'MA', 'ME'])
         ];
     }

@@ -19,6 +19,21 @@ class BranchRepository extends ServiceEntityRepository
         parent::__construct($registry, Branch::class);
     }
 
+    public function findByCountryAndStateThenGiveAverageActiveLoanValue($country, $state){
+        $connection = $this->getEntityManager()->getConnection();
+        $sql = 'SELECT AVG(`value`)
+                FROM branch 
+                INNER JOIN loan
+                ON branch.id = loan.branch_id
+                WHERE country = ? AND state = ? AND is_active = ?';
+        $stmt = $connection->prepare($sql);
+        $stmt->bindValue(1, $country);
+        $stmt->bindValue(2, $state);
+        $stmt->bindValue(3, 1);
+        $result = $stmt->executeQuery();
+
+        return $result->fetchAllAssociative();
+    }
     // /**
     //  * @return Branch[] Returns an array of Branch objects
     //  */

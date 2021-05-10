@@ -12,10 +12,9 @@ class AppFixtures extends Fixture
     public function load(ObjectManager $manager)
     {
 
-//        BranchFactory::createMany(10, ['loans' => LoanFactory::new()->many(10)]);
-        BranchFactory::createMany(10);
+        BranchFactory::createMany(1000);
 
-        LoanFactory::createMany(100, function(){ return ['branch' => BranchFactory::random()]; });
+        LoanFactory::createMany(10000, function(){ return ['branch' => BranchFactory::random()]; });
 
         $manager->flush();
     }
